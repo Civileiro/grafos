@@ -307,16 +307,29 @@ class Grafo(Generic[T]):
 
         return visited
 
-    def diametro(self) -> int:
+    def diametro(self) -> tuple[int, list[T]]:
         """
         calcula o maior caminho minimo entre quaisquer 2 vertices do grafo
         """
         max_path = 0
+        max_source = None
+        max_dest = None
         for v in self.vertices():
             smallest_paths_from_v = self.dijkstra(v, dest=None, cost=lambda _: 1)
-            v_max = max(smallest_paths_from_v.values())
-            max_path = max(max_path, v_max)
-        return max_path
+            v_max_dest = max(
+                smallest_paths_from_v, key=smallest_paths_from_v.__getitem__
+            )
+            v_max_path = smallest_paths_from_v[v_max_dest]
+            if v_max_path > max_path:
+                max_path = v_max_path
+                max_source = v
+                max_dest = v_max_dest
+            max_path = max(max_path, v_max_path)
+        if max_source is not None and max_dest is not None:
+            path = self.bfs(max_source, max_dest)
+        else:
+            path = []
+        return max_path, path
 
 
 class Email:
