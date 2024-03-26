@@ -80,6 +80,7 @@ graph.bfs('daniel.muschar@enron.com', 'james.derrick@enron.com') = ['daniel.musc
 5) Implemente um método que retorne uma lista com todos os vértices que
     estão localizados até uma distância D de um vértice N, em que D é a soma dos
     pesos ao longo do caminho entre dois vértices.
+len(graph.nodes_in_range('donna.lowry@enron.com', 3)) = 294
 
 
 6) Implemente um método que encontre qual é o maior caminho mínimo

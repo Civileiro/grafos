@@ -3,6 +3,7 @@ import os
 from dataclasses import dataclass
 from email.parser import HeaderParser
 from typing import IO, Any, Callable, Generic, Iterable, Self, Type, TypeVar
+from heapq import heappop, heappush
 
 P = TypeVar("P")
 
@@ -185,6 +186,9 @@ class Grafo(Generic[T]):
         Busca em largura para achar uma caminho de start ate end
         retorna uma lista vazia caso um caminho nao tenha sido encotrado
         """
+        if not self.existe_vertice(start) or not self.existe_vertice(end):
+            return []
+
         seen: set[T] = set([start])
         to_visit: deque[T] = deque([start])
         backtrace: dict[T, T | None] = {start: None}
@@ -213,6 +217,50 @@ class Grafo(Generic[T]):
         path.reverse()
 
         return path
+
+    def nodes_in_range(self, source: T, radius: int) -> set[T]:
+        """
+        retorna todos os vertices dentro de uma "distancia" da fonte
+        usa algoritmo de dijkstra modificado
+        """
+        if not self.existe_vertice(source):
+            return set()
+        # vertices que ja foram visitados
+        visited: set[T] = set()
+        # distancia minima encontrada ate cada vertice
+        scores: dict[T, int] = {}
+        # vertices a serem visitados
+        visit_next: list[tuple[int, T]] = []
+
+        def visit_pop():
+            try:
+                return heappop(visit_next)
+            except IndexError:
+                return None
+
+        def visit_push(score, node):
+            heappush(visit_next, (score, node))
+
+        visit_push(0, source)
+        scores[source] = 0
+
+        while next := visit_pop():
+            score, node = next
+            if score > radius:
+                break
+            if node in visited:
+                continue
+            visited.add(node)
+            for edge in self._adj_lists[node]:
+                next = edge.target_node
+                next_score = score + edge.weight
+                if next in visited:
+                    continue
+                if next not in scores or (next in scores and next_score < scores[next]):
+                    scores[next] = next_score
+                    visit_push(next_score, next)
+
+        return visited
 
 
 class Email:
@@ -375,7 +423,7 @@ class Part5:
 
     @staticmethod
     def perform(graph: Grafo[str]):
-        ...
+        print(f"{len(graph.nodes_in_range('donna.lowry@enron.com', 3)) = }")
 
 
 class Part6:
