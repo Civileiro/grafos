@@ -1,3 +1,4 @@
+from collections import deque
 import os
 from dataclasses import dataclass
 from email.parser import HeaderParser
@@ -179,6 +180,40 @@ class Grafo(Generic[T]):
         # TODO:
         return True
 
+    def bfs(self, start: T, end: T) -> list[T]:
+        """
+        Busca em largura para achar uma caminho de start ate end
+        retorna uma lista vazia caso um caminho nao tenha sido encotrado
+        """
+        seen: set[T] = set([start])
+        to_visit: deque[T] = deque([start])
+        backtrace: dict[T, T | None] = {start: None}
+
+        # breadth first search
+        while node := to_visit.popleft():
+            if node == end:
+                break
+            for next in self.retorna_adjacentes(node):
+                if next in seen:
+                    continue
+                seen.add(next)
+                backtrace[next] = node
+                to_visit.append(next)
+
+        # nao foi encontrado um caminho ate o alvo
+        if end not in seen:
+            return []
+
+        # reconstruir caminho encontrado
+        path_node = end
+        path = [end]
+        while prev_node := backtrace[path_node]:
+            path.append(prev_node)
+            path_node = prev_node
+        path.reverse()
+
+        return path
+
 
 class Email:
     header_parser = HeaderParser()
@@ -328,7 +363,7 @@ class Part4:
 
     @staticmethod
     def perform(graph: Grafo[str]):
-        ...
+        print(f"{graph.bfs('daniel.muschar@enron.com', 'james.derrick@enron.com') = }")
 
 
 class Part5:

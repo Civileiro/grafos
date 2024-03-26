@@ -74,6 +74,7 @@ Part3.euleriano(graph) = False
 4) Implemente um método que percorre o grafo em LARGURA e verifica
     se um indivíduo X pode alcançar um indivíduo Y retornando a sequência de vértices
     explorados durante a etapa de busca (vértices visitados).
+graph.bfs('daniel.muschar@enron.com', 'james.derrick@enron.com') = ['daniel.muschar@enron.com', 'david.forster@enron.com', 'peter.keohane@enron.com', 'james.derrick@enron.com']
 
 
 5) Implemente um método que retorne uma lista com todos os vértices que
