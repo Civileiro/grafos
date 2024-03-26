@@ -86,4 +86,5 @@ len(graph.nodes_in_range('donna.lowry@enron.com', 3)) = 294
 6) Implemente um método que encontre qual é o maior caminho mínimo
     entre qualquer par de vértices do grafo (i.e., diâmetro do grafo), retornando o valor e
     o caminho encontrado.
+graph.diametro() = 11
 

@@ -181,6 +181,51 @@ class Grafo(Generic[T]):
         # TODO:
         return True
 
+    def dijkstra(
+        self, source: T, dest: T | None, cost: Callable[[int], int]
+    ) -> dict[T, int]:
+        """
+        retorna a menor distancia de start ate todos os vertices ate encontrar end
+        """
+        if not self.existe_vertice(source):
+            return {}
+        # vertices que ja foram visitados
+        visited: set[T] = set()
+        # distancia minima encontrada ate cada vertice
+        scores: dict[T, int] = {}
+        # vertices a serem visitados
+        visit_next: list[tuple[int, T]] = []
+
+        def visit_pop():
+            try:
+                return heappop(visit_next)
+            except IndexError:
+                return None
+
+        def visit_push(score, node):
+            heappush(visit_next, (score, node))
+
+        visit_push(0, source)
+        scores[source] = 0
+
+        while next := visit_pop():
+            score, node = next
+            if node in visited:
+                continue
+            visited.add(node)
+            if node == dest:
+                break
+            for edge in self._adj_lists[node]:
+                next = edge.target_node
+                next_score = score + cost(edge.weight)
+                if next in visited:
+                    continue
+                if next not in scores or (next in scores and next_score < scores[next]):
+                    scores[next] = next_score
+                    visit_push(next_score, next)
+
+        return scores
+
     def bfs(self, start: T, end: T) -> list[T]:
         """
         Busca em largura para achar uma caminho de start ate end
@@ -261,6 +306,17 @@ class Grafo(Generic[T]):
                     visit_push(next_score, next)
 
         return visited
+
+    def diametro(self) -> int:
+        """
+        calcula o maior caminho minimo entre quaisquer 2 vertices do grafo
+        """
+        max_path = 0
+        for v in self.vertices():
+            smallest_paths_from_v = self.dijkstra(v, dest=None, cost=lambda _: 1)
+            v_max = max(smallest_paths_from_v.values())
+            max_path = max(max_path, v_max)
+        return max_path
 
 
 class Email:
@@ -435,7 +491,7 @@ class Part6:
 
     @staticmethod
     def perform(graph: Grafo[str]):
-        ...
+        print(f"{graph.diametro() = }")
 
 
 def perform_module(module: Type, perform_inputs):
