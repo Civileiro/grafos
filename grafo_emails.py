@@ -299,7 +299,6 @@ class Grafo(Generic[T]):
                 break
             if node in visited:
                 continue
-            visited.add(node)
             for edge in self._adj_lists[node]:
                 next = edge.target_node
                 next_score = score + edge.weight
@@ -308,6 +307,7 @@ class Grafo(Generic[T]):
                 if next not in scores or (next in scores and next_score < scores[next]):
                     scores[next] = next_score
                     visit_push(next_score, next)
+            visited.add(node)
 
         return visited
 
@@ -318,17 +318,20 @@ class Grafo(Generic[T]):
         max_path = 0
         max_source = None
         max_dest = None
+        # calcular todos os caminhos minimos entre todos os vertices
         for v in self.vertices():
             smallest_paths_from_v = self.dijkstra(v, dest=None, cost=lambda _: 1)
             v_max_dest = max(
                 smallest_paths_from_v, key=smallest_paths_from_v.__getitem__
             )
             v_max_path = smallest_paths_from_v[v_max_dest]
+            # salver possivel maior caminho minimo
             if v_max_path > max_path:
                 max_path = v_max_path
                 max_source = v
                 max_dest = v_max_dest
 
+        # calcular caminho da maior caminhada minima
         if max_source is not None and max_dest is not None:
             path, _ = self.bfs(max_source, max_dest)
         else:
