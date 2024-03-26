@@ -438,7 +438,7 @@ class Part6:
         ...
 
 
-def perform_module(module: Type, function_inputs, return_result_from=None):
+def perform_module(module: Type, perform_inputs):
     module_attrs = vars(module)
     if "__doc__" in module_attrs and module_attrs["__doc__"]:
         print("\n", module_attrs["__doc__"].strip(), sep="")
@@ -450,8 +450,8 @@ def perform_module(module: Type, function_inputs, return_result_from=None):
             continue
         if function.__doc__:
             print("\n", function.__doc__.strip(), sep="")
-        res = function(**function_inputs)
-        if function.__name__ == return_result_from:
+        res = function(**perform_inputs)
+        if function.__name__ == "perform":
             return_result = res
     print()
     return return_result
@@ -460,11 +460,10 @@ def perform_module(module: Type, function_inputs, return_result_from=None):
 if __name__ == "__main__":
     g = perform_module(
         Part1,
-        function_inputs={"dataset_path": "./amostra"},
-        return_result_from="perform",
+        perform_inputs={"dataset_path": "./amostra"},
     )
-    perform_module(Part2, function_inputs={"graph": g})
-    perform_module(Part3, function_inputs={"graph": g})
-    perform_module(Part4, function_inputs={"graph": g})
-    perform_module(Part5, function_inputs={"graph": g})
-    perform_module(Part6, function_inputs={"graph": g})
+    perform_module(Part2, perform_inputs={"graph": g})
+    perform_module(Part3, perform_inputs={"graph": g})
+    perform_module(Part4, perform_inputs={"graph": g})
+    perform_module(Part5, perform_inputs={"graph": g})
+    perform_module(Part6, perform_inputs={"graph": g})
