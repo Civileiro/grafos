@@ -177,10 +177,6 @@ class Grafo(Generic[T]):
                 write(f"({ar.target_node!r}, {ar.weight})")
             write("\n")
 
-    def conexo(self) -> bool:
-        # TODO:
-        return True
-
     def dijkstra(
         self, source: T, dest: T | None, cost: Callable[[int], int]
     ) -> dict[T, int]:
@@ -226,20 +222,28 @@ class Grafo(Generic[T]):
 
         return scores
 
-    def bfs(self, start: T, end: T) -> list[T]:
+    def bfs(self, start: T, end: T) -> tuple[list[T], set[T]]:
         """
         Busca em largura para achar uma caminho de start ate end
         retorna uma lista vazia caso um caminho nao tenha sido encotrado
         """
         if not self.existe_vertice(start) or not self.existe_vertice(end):
-            return []
+            return [], set()
 
         seen: set[T] = set([start])
+        explored: set[T] = set()
         to_visit: deque[T] = deque([start])
         backtrace: dict[T, T | None] = {start: None}
 
+        def pop_visit():
+            try:
+                return to_visit.popleft()
+            except IndexError:
+                return None
+
         # breadth first search
-        while node := to_visit.popleft():
+        while node := pop_visit():
+            explored.add(node)
             if node == end:
                 break
             for next in self.retorna_adjacentes(node):
@@ -251,7 +255,7 @@ class Grafo(Generic[T]):
 
         # nao foi encontrado um caminho ate o alvo
         if end not in seen:
-            return []
+            return [], explored
 
         # reconstruir caminho encontrado
         path_node = end
@@ -261,9 +265,9 @@ class Grafo(Generic[T]):
             path_node = prev_node
         path.reverse()
 
-        return path
+        return path, explored
 
-    def nodes_in_range(self, source: T, radius: int) -> set[T]:
+    def nodes_in_range(self, source: T, radius: int | None = None) -> set[T]:
         """
         retorna todos os vertices dentro de uma "distancia" da fonte
         usa algoritmo de dijkstra modificado
@@ -291,7 +295,7 @@ class Grafo(Generic[T]):
 
         while next := visit_pop():
             score, node = next
-            if score > radius:
+            if radius is not None and score > radius:
                 break
             if node in visited:
                 continue
@@ -324,11 +328,12 @@ class Grafo(Generic[T]):
                 max_path = v_max_path
                 max_source = v
                 max_dest = v_max_dest
-            max_path = max(max_path, v_max_path)
+
         if max_source is not None and max_dest is not None:
-            path = self.bfs(max_source, max_dest)
+            path, _ = self.bfs(max_source, max_dest)
         else:
             path = []
+
         return max_path, path
 
 
@@ -460,7 +465,14 @@ class Part3:
                 f"({graph.grau_entrada(vertice) = }, {graph.grau_saida(vertice) = })"
             )
             return False
-        if not graph.conexo():
+        # se a condição anterior passou então é suficiente checar apenas
+        # se é possivel chegar em todos os vertices a partir de um vertice
+        # qualquer para que o grafo seja conexo
+        v = next((v for v in graph.vertices()), None)
+        if v is None:
+            # o grafo é vazio
+            return True
+        if graph.nodes_in_range(v) != graph.ordem():
             print("O grafo não é conexo")
             return False
 
@@ -480,7 +492,12 @@ class Part4:
 
     @staticmethod
     def perform(graph: Grafo[str]):
-        print(f"{graph.bfs('daniel.muschar@enron.com', 'james.derrick@enron.com') = }")
+        print("graph.bfs('daniel.muschar@enron.com', 'james.derrick@enron.com')")
+        path, explored = graph.bfs(
+            "daniel.muschar@enron.com", "james.derrick@enron.com"
+        )
+        print(f"{path = }")
+        print(f"{len(explored) = }")
 
 
 class Part5:
