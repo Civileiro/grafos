@@ -128,6 +128,13 @@ class Grafo(Generic[T]):
                 grau += 1
         return grau
 
+    def grau_entrada_all(self) -> dict[T, int]:
+        graus = {u: 0 for u in self.vertices()}
+        for u in self.vertices():
+            for ar in self._adj_lists[u]:
+                graus[ar.target_node] += 1
+        return graus
+
     def grau_saida(self, u: T) -> int:
         if not self.existe_vertice(u):
             return 0
@@ -244,18 +251,18 @@ class Part2:
     """
 
     @staticmethod
-    def perform_a(graph: Grafo[str]) -> int:
+    def perform_a(graph: Grafo[str]):
         """
         a. O número de vértices do grafo (ordem)
         """
-        return graph.ordem()
+        print(f"{graph.ordem() = }")
 
     @staticmethod
-    def perform_b(graph: Grafo[str]) -> int:
+    def perform_b(graph: Grafo[str]):
         """
         b. O número de arestas do grafo (tamanho);
         """
-        return graph.tamanho()
+        print(f"{graph.tamanho() = }")
 
     @staticmethod
     def perform_c(graph: Grafo[str]):
@@ -276,7 +283,7 @@ class Part2:
         correspondentes (de maneira ordenada e decrescente de acordo com o grau);
         """
         graus = sorted(
-            ((graph.grau_entrada(u), u) for u in graph.vertices()), reverse=True
+            ((grau, u) for u, grau in graph.grau_entrada_all().items()), reverse=True
         )
         for grau_entrada, individuo in graus[:20]:
             print(f"{individuo}: {grau_entrada = }")
@@ -290,7 +297,7 @@ class Part3:
     """
 
     @staticmethod
-    def perform(graph: Grafo[str]) -> bool:
+    def euleriano(graph: Grafo[str]) -> bool:
         # um grafo direcionado é Euleriano se ele for conexo e
         # todos os vertices possuirem grau de saida e entrada iguais
         for vertice in graph.vertices():
@@ -306,6 +313,10 @@ class Part3:
             return False
 
         return True
+
+    @staticmethod
+    def perform(graph: Grafo[str]):
+        print(f"{Part3.euleriano(graph) = }")
 
 
 class Part4:
@@ -347,19 +358,18 @@ class Part6:
 def perform_module(module: Type, function_inputs, return_result_from=None):
     module_attrs = vars(module)
     if "__doc__" in module_attrs and module_attrs["__doc__"]:
-        print(module_attrs["__doc__"].strip())
+        print("\n", module_attrs["__doc__"].strip(), sep="")
     return_result = None
     for function in module_attrs.values():
-        if not isinstance(function, staticmethod):
+        if not isinstance(function, staticmethod) or not function.__name__.startswith(
+            "perform"
+        ):
             continue
         if function.__doc__:
-            print(function.__doc__.strip())
+            print("\n", function.__doc__.strip(), sep="")
         res = function(**function_inputs)
-        if res is not None:
-            print(res)
-            print()
-            if function.__name__ == return_result_from:
-                return_result = res
+        if function.__name__ == return_result_from:
+            return_result = res
     print()
     return return_result
 

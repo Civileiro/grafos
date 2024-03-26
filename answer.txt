@@ -1,3 +1,4 @@
+
 1) A partir das mensagens de e-mail da base, construa um grafo
     direcionado considerando o remetente e o(s) destinatários de cada mensagem. O
     grafo deve ser ponderado, considerando a frequência com que um remetente envia
@@ -5,16 +6,16 @@
     considerando como rótulo o endereço de e-mail de cada usuário. Para demonstrar a
     criação do grafo, você deve salvar toda a lista de adjacências em um arquivo texto.
 Grafo salvo em 'grafo_emails.txt'
-<__main__.Grafo object at 0x7fe2fa1eff90>
 
 
 2) Implemente métodos/funções para extrair as seguintes informações
     gerais do grafo construído:
+
 a. O número de vértices do grafo (ordem)
-5953
+graph.ordem() = 5953
 
 b. O número de arestas do grafo (tamanho);
-16079
+graph.tamanho() = 16079
 
 c. Os 20 indivíduos que possuem maior grau de saída e os valores
         correspondentes (de maneira ordenada e decrescente de acordo com o grau);
@@ -38,6 +39,7 @@ danielle.marcinkowski@enron.com: grau_saida = 168
 rhonda.denton@enron.com: grau_saida = 164
 lorna.brennan@enron.com: grau_saida = 163
 donna.lowry@enron.com: grau_saida = 151
+
 d. Os 20 indivíduos que possuem maior grau de entrada e os valores
         correspondentes (de maneira ordenada e decrescente de acordo com o grau);
 james.derrick@enron.com: grau_entrada = 183
@@ -61,21 +63,25 @@ jan.moore@enron.com: grau_entrada = 33
 brad.mckay@enron.com: grau_entrada = 33
 andrea.ring@enron.com: grau_entrada = 33
 
+
 3) Implemente uma função que verifica se o grafo é Euleriano, retornando
     true ou false. Caso a resposta seja false, a sua função deve informar ao usuário quais
     condições não foram satisfeitas.
 O vertice = 'responses@newpower.com' possui graus de entrada e saida diferentes (graph.grau_entrada(vertice) = 0, graph.grau_saida(vertice) = 1)
-False
+Part3.euleriano(graph) = False
 
 
 4) Implemente um método que percorre o grafo em LARGURA e verifica
     se um indivíduo X pode alcançar um indivíduo Y retornando a sequência de vértices
     explorados durante a etapa de busca (vértices visitados).
 
+
 5) Implemente um método que retorne uma lista com todos os vértices que
     estão localizados até uma distância D de um vértice N, em que D é a soma dos
     pesos ao longo do caminho entre dois vértices.
 
+
 6) Implemente um método que encontre qual é o maior caminho mínimo
     entre qualquer par de vértices do grafo (i.e., diâmetro do grafo), retornando o valor e
     o caminho encontrado.
+
