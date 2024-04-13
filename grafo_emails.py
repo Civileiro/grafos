@@ -86,23 +86,6 @@ class Grafo(Generic[T]):
         ar = next((ar for ar in self._adj_lists[u] if ar.target_node == v), None)
         return ar
 
-    # def atualiza_aresta_direcionado(
-    #     self, u: T, v: T, peso: int = default_weight
-    # ) -> int | None:
-    #     ar = self.get_aresta_direcionado(u, v)
-    #     if ar is None:
-    #         self.adiciona_aresta(u, v, peso)
-    #         return None
-    #     old_weight = ar.weight
-    #     ar.weight = peso
-    #     return old_weight
-    #
-    # def atualiza_aresta(self, u: T, v: T, peso: int = default_weight) -> int | None:
-    #     old_weight = self.atualiza_aresta_direcionado(u, v, peso)
-    #     if not self.direcionado:
-    #         self.atualiza_aresta_direcionado(v, u, peso)
-    #     return old_weight
-
     def _remove_aresta_unchecked(self, u: T, v: T) -> bool:
         ar = find_pop(self._adj_lists[u], lambda ar: ar.target_node == v)
         self._tamanho -= 1
