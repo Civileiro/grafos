@@ -67,7 +67,7 @@ andrea.ring@enron.com: grau_entrada = 33
 3) Implemente uma função que verifica se o grafo é Euleriano, retornando
     true ou false. Caso a resposta seja false, a sua função deve informar ao usuário quais
     condições não foram satisfeitas.
-O vertice = 'responses@newpower.com' possui graus de entrada e saida diferentes (graph.grau_entrada(vertice) = 0, graph.grau_saida(vertice) = 1)
+O vertice = 'james.derrick@enron.com' possui graus de entrada e saida diferentes (graph.grau_entrada(vertice) = 183, graph.grau_saida(vertice) = 203)
 Part3.euleriano(graph) = False
 
 
@@ -76,7 +76,7 @@ Part3.euleriano(graph) = False
     explorados durante a etapa de busca (vértices visitados).
 graph.bfs('daniel.muschar@enron.com', 'james.derrick@enron.com')
 path = ['daniel.muschar@enron.com', 'david.forster@enron.com', 'peter.keohane@enron.com', 'james.derrick@enron.com']
-len(explored) = 1777
+len(explored) = 2204
 
 
 5) Implemente um método que retorne uma lista com todos os vértices que
@@ -88,5 +88,5 @@ len(graph.nodes_in_range('donna.lowry@enron.com', 3)) = 294
 6) Implemente um método que encontre qual é o maior caminho mínimo
     entre qualquer par de vértices do grafo (i.e., diâmetro do grafo), retornando o valor e
     o caminho encontrado.
-graph.diametro() = (11, ['laura.luce@enron.com', 'patrick.tucker@enron.com', 'martin.cuilla@enron.com', 'jeffrey.gossett@enron.com', 'darron.giron@enron.com', 'susan.scott@enron.com', 'lillian.bailey@enron.com', 'sylvia.hu@enron.com', 'andrew.wu@enron.com', 'michelle.lawless@enron.com', 'deborah.shahmoradi@enron.com', 'david.k.bargainer@enron.com'])
+graph.diametro() = (11, ['elsa.piekielniak@enron.com', 'c..giron@enron.com', 'bruce.mills@enron.com', 'hal.mckinney@enron.com', 'darron.giron@enron.com', 'susan.scott@enron.com', 'lillian.bailey@enron.com', 'sylvia.hu@enron.com', 'andrew.wu@enron.com', 'michelle.lawless@enron.com', 'deborah.shahmoradi@enron.com', 'david.k.bargainer@enron.com'])
 
