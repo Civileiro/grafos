@@ -88,5 +88,5 @@ len(graph.nodes_in_range('donna.lowry@enron.com', 3)) = 294
 6) Implemente um método que encontre qual é o maior caminho mínimo
     entre qualquer par de vértices do grafo (i.e., diâmetro do grafo), retornando o valor e
     o caminho encontrado.
-graph.diametro() = (11, ['elsa.piekielniak@enron.com', 'c..giron@enron.com', 'bruce.mills@enron.com', 'hal.mckinney@enron.com', 'darron.giron@enron.com', 'susan.scott@enron.com', 'lillian.bailey@enron.com', 'sylvia.hu@enron.com', 'andrew.wu@enron.com', 'michelle.lawless@enron.com', 'deborah.shahmoradi@enron.com', 'david.k.bargainer@enron.com'])
+graph.diametro() = (142, ['powerprices@amerexenergy.com', 'mike.carson@enron.com', 'tpape@satake-usa.com'])
 

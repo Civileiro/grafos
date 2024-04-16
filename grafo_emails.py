@@ -161,7 +161,10 @@ class Grafo(Generic[T]):
             write("\n")
 
     def dijkstra(
-        self, source: T, dest: T | None, cost: Callable[[int], int]
+        self,
+        source: T,
+        dest: T | None,
+        cost: Callable[[int], int] = lambda weight: weight,
     ) -> dict[T, int]:
         """
         retorna a menor distancia de start ate todos os vertices ate encontrar end
@@ -303,7 +306,7 @@ class Grafo(Generic[T]):
         max_dest = None
         # calcular todos os caminhos minimos entre todos os vertices
         for v in self.vertices():
-            smallest_paths_from_v = self.dijkstra(v, dest=None, cost=lambda _: 1)
+            smallest_paths_from_v = self.dijkstra(v, dest=None)
             v_max_dest = max(
                 smallest_paths_from_v, key=smallest_paths_from_v.__getitem__
             )
