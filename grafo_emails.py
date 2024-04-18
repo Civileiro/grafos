@@ -82,16 +82,6 @@ class Grafo(Generic[T]):
         self._ordem += 1
         return True
 
-    def remove_vertice(self, u: T) -> bool:
-        if not self.existe_vertice(u):
-            return False
-        del self._adj_lists[u]
-        self._ordem -= 1
-        # remover ligacoes de outros vertices
-        for v in self.vertices():
-            self._remove_aresta_unchecked(v, u)
-        return True
-
     def adiciona_aresta(self, u: T, v: T, peso: int = default_weight) -> bool:
         # nao adicionar arestas duplicadas
         if self.tem_aresta(u, v):
@@ -110,16 +100,6 @@ class Grafo(Generic[T]):
             return None
         ar = next((ar for ar in self._adj_lists[u] if ar.target_node == v), None)
         return ar
-
-    def _remove_aresta_unchecked(self, u: T, v: T) -> bool:
-        ar = find_pop(self._adj_lists[u], lambda ar: ar.target_node == v)
-        self._tamanho -= 1
-        return ar is not None
-
-    def remove_aresta(self, u: T, v: T) -> bool:
-        if not self.tem_aresta(u, v):
-            return False
-        return self._remove_aresta_unchecked(u, v)
 
     def tem_aresta(self, u: T, v: T) -> bool:
         if not self.existe_vertice(u) or not self.existe_vertice(v):
@@ -152,21 +132,6 @@ class Grafo(Generic[T]):
 
     def grau(self, u: T) -> int:
         return self.grau_entrada(u) + self.grau_saida(u)
-
-    def get_peso(self, u: T, v: T) -> int | None:
-        for ar in self._adj_lists[u]:
-            if ar.target_node == v:
-                return ar.weight
-        return None
-
-    def retorna_adjacentes(self, u: T) -> list[T]:
-        if not self.existe_vertice(u):
-            return []
-        return [ar.target_node for ar in self._adj_lists[u]]
-
-    def get_max_arestas(self) -> int:
-        n = len(self._adj_lists)
-        return n * n
 
     def imprime_lista_adjacencias(self, file: IO[str] | None):
         def write(s: str):
