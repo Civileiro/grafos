@@ -219,8 +219,6 @@ class Grafo(Generic[T]):
             return set()
         # vertices que ja foram visitados
         visited: set[T] = set()
-        # distancia minima encontrada ate cada vertice
-        scores: dict[T, int] = {}
         # vertices a serem visitados
         visit_next: list[tuple[int, T]] = []
 
@@ -234,7 +232,6 @@ class Grafo(Generic[T]):
             heappush(visit_next, (score, node))
 
         visit_push(0, source)
-        scores[source] = 0
 
         while next := visit_pop():
             score, node = next
@@ -247,9 +244,7 @@ class Grafo(Generic[T]):
                 next_score = score + edge.weight
                 if next in visited:
                     continue
-                if next not in scores or (next in scores and next_score < scores[next]):
-                    scores[next] = next_score
-                    visit_push(next_score, next)
+                visit_push(next_score, next)
             visited.add(node)
 
         return visited
