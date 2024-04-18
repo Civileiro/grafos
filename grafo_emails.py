@@ -1,8 +1,16 @@
-from collections import deque
 import os
 from dataclasses import dataclass
 from email.parser import HeaderParser
-from typing import IO, Any, Callable, Generic, Iterable, Self, Type, TypeVar
+from typing import (
+    IO,
+    Any,
+    Callable,
+    Generic,
+    Iterable,
+    Self,
+    Type,
+    TypeVar,
+)
 from heapq import heappop, heappush
 
 P = TypeVar("P")
@@ -27,6 +35,23 @@ W = TypeVar("W")
 class Aresta(Generic[T, W]):
     target_node: T
     weight: W
+
+
+A = TypeVar("A")
+
+
+def path_from_pred(pred: dict[A, A | None], dest: A) -> list[A]:
+    # nao foi encontrado um caminho ate o alvo
+    if dest not in pred:
+        return []
+
+    path_node = dest
+    path = [dest]
+    while prev_node := pred[path_node]:
+        path_node = prev_node
+        path.append(path_node)
+    path.reverse()
+    return path
 
 
 # Grafo ponderado e direcionado
@@ -165,18 +190,18 @@ class Grafo(Generic[T]):
         source: T,
         dest: T | None,
         cost: Callable[[int], int] = lambda weight: weight,
-    ) -> dict[T, int]:
+    ) -> tuple[dict[T, int], dict[T, T | None]]:
         """
         retorna a menor distancia de start ate todos os vertices ate encontrar end
         """
         if not self.existe_vertice(source):
-            return {}
-        # vertices que ja foram visitados
-        visited: set[T] = set()
+            return {}, {}
         # distancia minima encontrada ate cada vertice
-        scores: dict[T, int] = {}
+        distances: dict[T, int] = {}
         # vertices a serem visitados
-        visit_next: list[tuple[int, T]] = []
+        visit_next: list[tuple[int, T, T | None]] = []
+        # predecessores
+        predecessors: dict[T, T | None] = {source: None}
 
         def visit_pop():
             try:
@@ -184,72 +209,39 @@ class Grafo(Generic[T]):
             except IndexError:
                 return None
 
-        def visit_push(score, node):
-            heappush(visit_next, (score, node))
+        def visit_push(score, node, pred):
+            heappush(visit_next, (score, node, pred))
 
-        visit_push(0, source)
-        scores[source] = 0
+        visit_push(0, source, None)
 
         while next := visit_pop():
-            score, node = next
-            if node in visited:
+            dist, node, pred = next
+            if node in distances:
                 continue
-            visited.add(node)
+            distances[node] = dist
+            predecessors[node] = pred
             if node == dest:
                 break
             for edge in self._adj_lists[node]:
                 next = edge.target_node
-                next_score = score + cost(edge.weight)
-                if next in visited:
+                if next in distances:
                     continue
-                if next not in scores or (next in scores and next_score < scores[next]):
-                    scores[next] = next_score
-                    visit_push(next_score, next)
+                next_score = dist + cost(edge.weight)
+                visit_push(next_score, next, node)
 
-        return scores
+        return distances, predecessors
 
-    def bfs(self, start: T, end: T) -> tuple[list[T], set[T]]:
+    def bfs(self, source: T, dest: T) -> tuple[list[T], set[T]]:
         """
-        Busca em largura para achar uma caminho de start ate end
+        Busca em largura para achar uma caminho de source ate dest
         retorna uma lista vazia caso um caminho nao tenha sido encotrado
         """
-        if not self.existe_vertice(start) or not self.existe_vertice(end):
-            return [], set()
 
-        seen: set[T] = set([start])
-        explored: set[T] = set()
-        to_visit: deque[T] = deque([start])
-        backtrace: dict[T, T | None] = {start: None}
-
-        def pop_visit():
-            try:
-                return to_visit.popleft()
-            except IndexError:
-                return None
-
-        # breadth first search
-        while node := pop_visit():
-            explored.add(node)
-            if node == end:
-                break
-            for next in self.retorna_adjacentes(node):
-                if next in seen:
-                    continue
-                seen.add(next)
-                backtrace[next] = node
-                to_visit.append(next)
-
-        # nao foi encontrado um caminho ate o alvo
-        if end not in seen:
-            return [], explored
+        distances, pred = self.dijkstra(source, dest, lambda _: 1)
+        explored = {vert for vert in distances}
 
         # reconstruir caminho encontrado
-        path_node = end
-        path = [end]
-        while prev_node := backtrace[path_node]:
-            path.append(prev_node)
-            path_node = prev_node
-        path.reverse()
+        path = path_from_pred(pred, dest)
 
         return path, explored
 
@@ -301,29 +293,28 @@ class Grafo(Generic[T]):
         """
         calcula o maior caminho minimo entre quaisquer 2 vertices do grafo
         """
-        max_path = 0
-        max_source = None
+        max_path_len = 0
         max_dest = None
+        max_pred: dict[T, T | None] = {}
         # calcular todos os caminhos minimos entre todos os vertices
         for v in self.vertices():
-            smallest_paths_from_v = self.dijkstra(v, dest=None)
+            smallest_paths_from_v, pred = self.dijkstra(v, dest=None)
             v_max_dest = max(
                 smallest_paths_from_v, key=smallest_paths_from_v.__getitem__
             )
             v_max_path = smallest_paths_from_v[v_max_dest]
             # salver possivel maior caminho minimo
-            if v_max_path > max_path:
-                max_path = v_max_path
-                max_source = v
+            if v_max_path > max_path_len:
+                max_path_len = v_max_path
                 max_dest = v_max_dest
+                max_pred = pred
 
+        if max_dest is None:
+            return 0, []
         # calcular caminho da maior caminhada minima
-        if max_source is not None and max_dest is not None:
-            path, _ = self.bfs(max_source, max_dest)
-        else:
-            path = []
+        path = path_from_pred(max_pred, max_dest)
 
-        return max_path, path
+        return max_path_len, path
 
 
 class Email:
@@ -498,7 +489,7 @@ class Part5:
 
     @staticmethod
     def perform(graph: Grafo[str]):
-        print(f"{len(graph.nodes_in_range('donna.lowry@enron.com', 3)) = }")
+        print(f"{len(graph.nodes_in_range('donna.lowry@enron.com', 5)) = }")
 
 
 class Part6:
