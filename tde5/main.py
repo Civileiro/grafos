@@ -1,7 +1,7 @@
-import time
 from typing import Type
 
 from grafo import Grafo, GrafoNetflixDirected, GrafoNetflixUndirected
+from timing import TimingPrinter
 
 
 class Part1:
@@ -14,23 +14,40 @@ class Part1:
 
     @staticmethod
     def perform(dataset_path: str) -> tuple[Grafo, Grafo]:
-        print("Criando grafo direcionado...")
-        t0 = time.perf_counter()
-        grafo_direcionado = GrafoNetflixDirected(dataset_path)
-        t = time.perf_counter() - t0
-        print(f"Grafo criado em {t} segundos")
+
+        with TimingPrinter("criar grafo direcionado"):
+            grafo_direcionado = GrafoNetflixDirected.from_file(dataset_path)
         print(f"{grafo_direcionado.ordem = }")
         print(f"{grafo_direcionado.tamanho = }")
 
-        print("\nCriando grafo não-direcionado...")
-        t0 = time.perf_counter()
-        grafo_nao_direcionado = GrafoNetflixUndirected(dataset_path)
-        t = time.perf_counter() - t0
-        print(f"Grafo criado em {t} segundos")
+        print()
+        with TimingPrinter("criar grafo não direcionado"):
+            grafo_nao_direcionado = GrafoNetflixUndirected.from_file(dataset_path)
         print(f"{grafo_nao_direcionado.ordem = }")
         print(f"{grafo_nao_direcionado.tamanho = }")
 
         return grafo_direcionado, grafo_nao_direcionado
+
+
+class Part2:
+    """
+    2) Função para a identificação de componentes. Para o grafo direcionado, utilize essa função
+    para contar a quantidade de componentes fortemente conectadas. Para o grafo não-direcionado,
+    retorne a quantidade de componentes conectadas.
+    """
+
+    @staticmethod
+    def perform(
+        grafo_direcionado: Grafo,
+        grafo_nao_direcionado: Grafo,
+    ):
+        with TimingPrinter("contar componentes do grafo direcionado"):
+            count = grafo_direcionado.count_fully_connected_components()
+        print(f"{count = }")
+        print()
+        with TimingPrinter("contar componentes do grafo não direcionado"):
+            count = grafo_nao_direcionado.count_fully_connected_components()
+        print(f"{count = }")
 
 
 def perform_module(module: Type, perform_inputs):
@@ -57,3 +74,5 @@ if __name__ == "__main__":
         Part1,
         perform_inputs={"dataset_path": "./netflix_amazon_disney_titles.csv"},
     )
+    grafos = {"grafo_direcionado": gdir, "grafo_nao_direcionado": gundir}
+    perform_module(Part2, perform_inputs=grafos)

@@ -3,13 +3,25 @@
     retorne a quantidade de vértices e arestas. Durante o processo de construção, todos os nomes devem
     ser padronizados em letras maiúsculas e sem espaços em branco no início e no final da string. Entradas
     do conjunto de dados onde o nome do diretor e/ou nome do elenco estão vazias, devem ser ignoradas.
-Criando grafo direcionado...
-Grafo criado em 0.1597626040020259 segundos
+trabalhando em 'criar grafo direcionado'...
+'criar grafo direcionado' terminou em 0.14571055499982322 segundos
 grafo_direcionado.ordem = 57609
 grafo_direcionado.tamanho = 90033
 
-Criando grafo não-direcionado...
-Grafo criado em 0.5010852589985006 segundos
+trabalhando em 'criar grafo não direcionado'...
+'criar grafo não direcionado' terminou em 0.4753565549981431 segundos
 grafo_nao_direcionado.ordem = 60921
 grafo_nao_direcionado.tamanho = 483031
+
+
+2) Função para a identificação de componentes. Para o grafo direcionado, utilize essa função
+    para contar a quantidade de componentes fortemente conectadas. Para o grafo não-direcionado,
+    retorne a quantidade de componentes conectadas.
+trabalhando em 'contar componentes do grafo direcionado'...
+'contar componentes do grafo direcionado' terminou em 0.11650596300023608 segundos
+count = 57563
+
+trabalhando em 'contar componentes do grafo não direcionado'...
+'contar componentes do grafo não direcionado' terminou em 0.07000034200609662 segundos
+count = 1959
 
