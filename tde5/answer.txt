@@ -1,0 +1,15 @@
+
+1) Construção dos dois grafos solicitados (direcionado e não-direcionado). Para cada grafo,
+    retorne a quantidade de vértices e arestas. Durante o processo de construção, todos os nomes devem
+    ser padronizados em letras maiúsculas e sem espaços em branco no início e no final da string. Entradas
+    do conjunto de dados onde o nome do diretor e/ou nome do elenco estão vazias, devem ser ignoradas.
+Criando grafo direcionado...
+Grafo criado em 0.1597626040020259 segundos
+grafo_direcionado.ordem = 57609
+grafo_direcionado.tamanho = 90033
+
+Criando grafo não-direcionado...
+Grafo criado em 0.5010852589985006 segundos
+grafo_nao_direcionado.ordem = 60921
+grafo_nao_direcionado.tamanho = 483031
+
