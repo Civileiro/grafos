@@ -1,6 +1,6 @@
 from typing import Type
 
-from grafo import Grafo, GrafoNetflixDirected, GrafoNetflixUndirected
+from grafo import Grafo, GrafoDirected, GrafoUndirected
 from timing import TimingPrinter
 
 
@@ -16,13 +16,13 @@ class Part1:
     def perform(dataset_path: str) -> tuple[Grafo, Grafo]:
 
         with TimingPrinter("criar grafo direcionado"):
-            grafo_direcionado = GrafoNetflixDirected.from_file(dataset_path)
+            grafo_direcionado = GrafoDirected.from_file(dataset_path)
         print(f"{grafo_direcionado.ordem = }")
         print(f"{grafo_direcionado.tamanho = }")
 
         print()
         with TimingPrinter("criar grafo não direcionado"):
-            grafo_nao_direcionado = GrafoNetflixUndirected.from_file(dataset_path)
+            grafo_nao_direcionado = GrafoUndirected.from_file(dataset_path)
         print(f"{grafo_nao_direcionado.ordem = }")
         print(f"{grafo_nao_direcionado.tamanho = }")
 
@@ -48,6 +48,47 @@ class Part2:
         with TimingPrinter("contar componentes do grafo não direcionado"):
             count = grafo_nao_direcionado.count_fully_connected_components()
         print(f"{count = }")
+
+
+class Part3:
+    """
+    3) Função que recebe como entrada um vértice X (por exemplo, BOB ODENKIRK) e retorna a
+    Árvore Geradora Mínima da componente que contêm o vértice X, bem como o custo total da árvore
+    (i.e., a soma dos pesos das arestas da árvore).
+    """
+
+    @staticmethod
+    def perform(
+        grafo_direcionado: Grafo,
+        grafo_nao_direcionado: GrafoUndirected,
+    ):
+        def uma_funcao(g: GrafoUndirected, x: str) -> tuple[Grafo, int]:
+            with TimingPrinter("encontrando componente"):
+                [scc] = g.kosaraju_scc(target=x)
+
+            with TimingPrinter("criando subgrafo"):
+                scc_graph = g.subset(scc)
+            with TimingPrinter("criando msp"):
+                msp = scc_graph.kruskal_msp()
+            with TimingPrinter("computando soma dos pesos"):
+                total_cost = sum(msp.edges().values())
+            return msp, total_cost
+
+        target = "BOB ODENKIRK"
+        # não existe arvore geradora minima para grafos direcionados?
+        # with TimingPrinter(f"executando função no grafo direcionado para {target!r}"):
+        #     agm, custo_total = uma_funcao(grafo_direcionado, target)
+        # print(f"{agm.ordem = }")
+        # print(f"{agm.tamanho = }")
+        # print(f"{custo_total = }")
+
+        with TimingPrinter(
+            f"executando função no grafo não direcionado para {target!r}"
+        ):
+            agm, custo_total = uma_funcao(grafo_nao_direcionado, target)
+        print(f"{agm.ordem = }")
+        print(f"{agm.tamanho = }")
+        print(f"{custo_total = }")
 
 
 def perform_module(module: Type, perform_inputs):
@@ -76,3 +117,4 @@ if __name__ == "__main__":
     )
     grafos = {"grafo_direcionado": gdir, "grafo_nao_direcionado": gundir}
     perform_module(Part2, perform_inputs=grafos)
+    perform_module(Part3, perform_inputs=grafos)

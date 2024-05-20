@@ -4,12 +4,12 @@
     ser padronizados em letras maiúsculas e sem espaços em branco no início e no final da string. Entradas
     do conjunto de dados onde o nome do diretor e/ou nome do elenco estão vazias, devem ser ignoradas.
 trabalhando em 'criar grafo direcionado'...
-'criar grafo direcionado' terminou em 0.14571055499982322 segundos
+'criar grafo direcionado' terminou em 0.14348169300501468 segundos
 grafo_direcionado.ordem = 57609
 grafo_direcionado.tamanho = 90033
 
 trabalhando em 'criar grafo não direcionado'...
-'criar grafo não direcionado' terminou em 0.4753565549981431 segundos
+'criar grafo não direcionado' terminou em 0.47890677399846027 segundos
 grafo_nao_direcionado.ordem = 60921
 grafo_nao_direcionado.tamanho = 483031
 
@@ -18,10 +18,28 @@ grafo_nao_direcionado.tamanho = 483031
     para contar a quantidade de componentes fortemente conectadas. Para o grafo não-direcionado,
     retorne a quantidade de componentes conectadas.
 trabalhando em 'contar componentes do grafo direcionado'...
-'contar componentes do grafo direcionado' terminou em 0.11650596300023608 segundos
+'contar componentes do grafo direcionado' terminou em 0.11774414699902991 segundos
 count = 57563
 
 trabalhando em 'contar componentes do grafo não direcionado'...
-'contar componentes do grafo não direcionado' terminou em 0.07000034200609662 segundos
+'contar componentes do grafo não direcionado' terminou em 0.07156030699843541 segundos
 count = 1959
+
+
+3) Função que recebe como entrada um vértice X (por exemplo, BOB ODENKIRK) e retorna a
+    Árvore Geradora Mínima da componente que contêm o vértice X, bem como o custo total da árvore
+    (i.e., a soma dos pesos das arestas da árvore).
+trabalhando em "executando função no grafo não direcionado para 'BOB ODENKIRK'"...
+trabalhando em 'encontrando componente'...
+'encontrando componente' terminou em 0.6360009269992588 segundos
+trabalhando em 'criando subgrafo'...
+'criando subgrafo' terminou em 0.592436896993604 segundos
+trabalhando em 'criando msp'...
+'criando msp' terminou em 0.574858496998786 segundos
+trabalhando em 'computando soma dos pesos'...
+'computando soma dos pesos' terminou em 0.03359853100118926 segundos
+"executando função no grafo não direcionado para 'BOB ODENKIRK'" terminou em 1.846576408999681 segundos
+agm.ordem = 50153
+agm.tamanho = 50152
+custo_total = 101218
 
