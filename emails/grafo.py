@@ -1,14 +1,10 @@
-import os
 from dataclasses import dataclass
-from email.parser import HeaderParser
 from typing import (
     IO,
-    Any,
     Callable,
     Generic,
     Iterable,
     Self,
-    Type,
     TypeVar,
 )
 from heapq import heappop, heappush
@@ -75,12 +71,12 @@ class Grafo(Generic[T]):
     def existe_vertice(self, u: T) -> bool:
         return u in self.vertices()
 
-    def adiciona_vertice(self, u: T) -> bool:
+    def adiciona_vertice(self, u: T) -> T:
         if self.existe_vertice(u):
-            return False
+            return u
         self._adj_lists[u] = []
         self._ordem += 1
-        return True
+        return u
 
     def adiciona_aresta(self, u: T, v: T, peso: int = default_weight) -> bool:
         # nao adicionar arestas duplicadas
@@ -108,6 +104,9 @@ class Grafo(Generic[T]):
             if ar.target_node == v:
                 return True
         return False
+
+    def tem_aresta_undirected(self, u: T, v: T) -> bool:
+        return self.tem_aresta(u, v) or self.tem_aresta(v, u)
 
     def grau_entrada(self, u: T) -> int:
         if not self.existe_vertice(u):
@@ -276,220 +275,55 @@ class Grafo(Generic[T]):
 
         return max_path_len, path
 
-
-class Email:
-    header_parser = HeaderParser()
-
-    @classmethod
-    def parse_mail_list(cls, field: str | None) -> list[str]:
-        if not field:
-            return []
-        return [mail.strip() for mail in field.split(",")]
-
-    @classmethod
-    def parse_email_from_to(cls, email_path: str) -> tuple[list[str], list[str]]:
-        with open(email_path, "r") as f:
-            # f.read()
-            email = cls.header_parser.parse(f)
-
-        from_ = cls.parse_mail_list(email.get("From", None))
-        to = cls.parse_mail_list(email.get("To", None))
-
-        return from_, to
-
-
-class FileTree:
-    @classmethod
-    def map_files_rec(cls, path: str, func: Callable[[str], Any]):
-        for basepath, _, filenames in os.walk(path):
-            for filename in filenames:
-                filepath = os.path.join(basepath, filename)
-                func(filepath)
-
-
-class Part1:
-    """
-    1) A partir das mensagens de e-mail da base, construa um grafo
-    direcionado considerando o remetente e o(s) destinatários de cada mensagem. O
-    grafo deve ser ponderado, considerando a frequência com que um remetente envia
-    uma mensagem para um destinatário. O grafo também deve ser rotulado,
-    considerando como rótulo o endereço de e-mail de cada usuário. Para demonstrar a
-    criação do grafo, você deve salvar toda a lista de adjacências em um arquivo texto.
-    """
-
-    @staticmethod
-    def perform(dataset_path: str) -> Grafo[str]:
-        g: Grafo[str] = Grafo()
-
-        def add_email_to_graph(email_path: str):
-            from_, to = Email.parse_email_from_to(email_path)
-            for from_email in from_:
-                for to_email in to:
-                    ar = g.get_aresta(from_email, to_email)
-                    if not ar:
-                        g.adiciona_aresta(from_email, to_email, 1)
-                        continue
-                    ar.weight += 1
-
-        FileTree.map_files_rec(dataset_path, add_email_to_graph)
-
-        graph_file = "grafo_emails.txt"
-        with open(graph_file, "w") as f:
-            g.imprime_lista_adjacencias(f)
-        print(f"Grafo salvo em {graph_file!r}")
-
-        return g
-
-
-class Part2:
-    """
-    2) Implemente métodos/funções para extrair as seguintes informações
-    gerais do grafo construído:
-    """
-
-    @staticmethod
-    def perform_a(graph: Grafo[str]):
-        """
-        a. O número de vértices do grafo (ordem)
-        """
-        print(f"{graph.ordem() = }")
-
-    @staticmethod
-    def perform_b(graph: Grafo[str]):
-        """
-        b. O número de arestas do grafo (tamanho);
-        """
-        print(f"{graph.tamanho() = }")
-
-    @staticmethod
-    def perform_c(graph: Grafo[str]):
-        """
-        c. Os 20 indivíduos que possuem maior grau de saída e os valores
-        correspondentes (de maneira ordenada e decrescente de acordo com o grau);
-        """
-        graus = sorted(
-            ((graph.grau_saida(u), u) for u in graph.vertices()), reverse=True
-        )
-        for grau_saida, individuo in graus[:20]:
-            print(f"{individuo}: {grau_saida = }")
-
-    @staticmethod
-    def perform_d(graph: Grafo[str]):
-        """
-        d. Os 20 indivíduos que possuem maior grau de entrada e os valores
-        correspondentes (de maneira ordenada e decrescente de acordo com o grau);
-        """
-        graus = sorted(
-            ((grau, u) for u, grau in graph.grau_entrada_all().items()), reverse=True
-        )
-        for grau_entrada, individuo in graus[:20]:
-            print(f"{individuo}: {grau_entrada = }")
-
-
-class Part3:
-    """
-    3) Implemente uma função que verifica se o grafo é Euleriano, retornando
-    true ou false. Caso a resposta seja false, a sua função deve informar ao usuário quais
-    condições não foram satisfeitas.
-    """
-
-    @staticmethod
-    def euleriano(graph: Grafo[str]) -> bool:
-        # um grafo direcionado é Euleriano se ele for conexo e
-        # todos os vertices possuirem grau de saida e entrada iguais
-        for vertice in graph.vertices():
-            if graph.grau_entrada(vertice) == graph.grau_saida(vertice):
-                continue
-            print(
-                f"O {vertice = !r} possui graus de entrada e saida diferentes "
-                f"({graph.grau_entrada(vertice) = }, {graph.grau_saida(vertice) = })"
+    def is_cyclic(self) -> bool:
+        # tarjans algorithm
+        to_visit = 0
+        visiting = 1
+        visited = 2
+        statuses = {vert: to_visit for vert in self.vertices()}
+        pred: dict[T, T | None] = {}
+        while True:
+            start_node = next(
+                (k for k in statuses.keys() if statuses[k] == to_visit), None
             )
-            return False
-        # se a condição anterior passou então é suficiente checar apenas
-        # se é possivel chegar em todos os vertices a partir de um vertice
-        # qualquer para que o grafo seja conexo
-        v = next((v for v in graph.vertices()), None)
-        if v is None:
-            # o grafo é vazio
-            return True
-        if graph.nodes_in_range(v) != graph.ordem():
-            print("O grafo não é conexo")
-            return False
-
-        return True
-
-    @staticmethod
-    def perform(graph: Grafo[str]):
-        print(f"{Part3.euleriano(graph) = }")
-
-
-class Part4:
-    """
-    4) Implemente um método que percorre o grafo em LARGURA e verifica
-    se um indivíduo X pode alcançar um indivíduo Y retornando a sequência de vértices
-    explorados durante a etapa de busca (vértices visitados).
-    """
-
-    @staticmethod
-    def perform(graph: Grafo[str]):
-        print("graph.bfs('daniel.muschar@enron.com', 'james.derrick@enron.com')")
-        path, explored = graph.bfs(
-            "daniel.muschar@enron.com", "james.derrick@enron.com"
-        )
-        print(f"{path = }")
-        print(f"{len(explored) = }")
+            if start_node is None:
+                return False
+            pred[start_node] = None
+            curr_node: T | None = start_node
+            while curr_node:
+                # print(f"{curr_node = }")
+                node = curr_node
+                statuses[node] = visiting
+                is_leaf = True
+                for ar in self._adj_lists[node]:
+                    if statuses[ar.target_node] == visiting:
+                        return True
+                    if (
+                        ar.target_node == pred[node]
+                        or statuses[ar.target_node] == visited
+                    ):
+                        continue
+                    is_leaf = False
+                    curr_node = ar.target_node
+                    pred[ar.target_node] = node
+                    break
+                if is_leaf:
+                    curr_node = pred[node]
+                    print(node)
+                    statuses[node] = visited
 
 
-class Part5:
-    """
-    5) Implemente um método que retorne uma lista com todos os vértices que
-    estão localizados até uma distância D de um vértice N, em que D é a soma dos
-    pesos ao longo do caminho entre dois vértices.
-    """
-
-    @staticmethod
-    def perform(graph: Grafo[str]):
-        print(f"{len(graph.nodes_in_range('donna.lowry@enron.com', 5)) = }")
-
-
-class Part6:
-    """
-    6) Implemente um método que encontre qual é o maior caminho mínimo
-    entre qualquer par de vértices do grafo (i.e., diâmetro do grafo), retornando o valor e
-    o caminho encontrado.
-    """
-
-    @staticmethod
-    def perform(graph: Grafo[str]):
-        print(f"{graph.diametro() = }")
-
-
-def perform_module(module: Type, perform_inputs):
-    module_attrs = vars(module)
-    if "__doc__" in module_attrs and module_attrs["__doc__"]:
-        print("\n", module_attrs["__doc__"].strip(), sep="")
-    return_result = None
-    for function in module_attrs.values():
-        if not isinstance(function, staticmethod) or not function.__name__.startswith(
-            "perform"
-        ):
-            continue
-        if function.__doc__:
-            print("\n", function.__doc__.strip(), sep="")
-        res = function(**perform_inputs)
-        if function.__name__ == "perform":
-            return_result = res
-    print()
-    return return_result
-
-
-if __name__ == "__main__":
-    g = perform_module(
-        Part1,
-        perform_inputs={"dataset_path": "./amostra"},
-    )
-    perform_module(Part2, perform_inputs={"graph": g})
-    perform_module(Part3, perform_inputs={"graph": g})
-    perform_module(Part4, perform_inputs={"graph": g})
-    perform_module(Part5, perform_inputs={"graph": g})
-    perform_module(Part6, perform_inputs={"graph": g})
+g: Grafo[str] = Grafo()
+g.adiciona_aresta("A", "F")
+g.adiciona_aresta("A", "B")
+g.adiciona_aresta("B", "H")
+g.adiciona_aresta("D", "C")
+g.adiciona_aresta("D", "E")
+g.adiciona_aresta("D", "H")
+g.adiciona_aresta("E", "I")
+g.adiciona_aresta("G", "A")
+g.adiciona_aresta("G", "B")
+g.adiciona_aresta("G", "C")
+g.adiciona_aresta("J", "E")
+g.adiciona_aresta("I", "C")
+print(f"{g.is_cyclic() = }")
