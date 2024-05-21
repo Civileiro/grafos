@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from collections import deque
+from collections import defaultdict, deque
 from itertools import product
 from typing import Iterable, Self
 from heapq import heapify, heappop, heappush
@@ -50,6 +50,9 @@ class Grafo(ABC):
 
     def neighbors(self, u: str) -> Iterable[str]:
         return self._adj[u].keys()
+
+    @abstractmethod
+    def graus(self, subset: set[str] | None = None) -> dict[str, int]: ...
 
     def count_fully_connected_components(self: Self) -> int:
         return len(self.kosaraju_scc())
@@ -178,6 +181,16 @@ class GrafoDirected(Grafo):
 
         return True
 
+    def graus(self, subset: set[str] | None = None) -> dict[str, int]:
+        graus: dict[str, int] = defaultdict(int)
+        for node in self.vertices():
+            for neighbor in self.neighbors(node):
+                if subset is None or node in subset:
+                    graus[node] += 1
+                if subset is None or neighbor in subset:
+                    graus[neighbor] += 1
+        return graus
+
 
 class GrafoUndirected(Grafo):
 
@@ -212,6 +225,10 @@ class GrafoUndirected(Grafo):
         self._tamanho += 1
 
         return True
+
+    def graus(self, subset: set[str] | None = None) -> dict[str, int]:
+        nodes = subset if subset is not None else self.vertices()
+        return {node: sum(1 for _ in self.neighbors(node)) for node in nodes}
 
     def count_fully_connected_components(self: Self) -> int:
         visited: set[str] = set()

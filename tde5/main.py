@@ -1,4 +1,8 @@
 from typing import Type
+from heapq import nlargest
+
+from matplotlib import pyplot as plt
+import numpy as np
 
 from grafo import Grafo, GrafoDirected, GrafoUndirected
 from timing import TimingPrinter
@@ -91,6 +95,83 @@ class Part3:
         print(f"{custo_total = }")
 
 
+class Part4:
+    """
+    4) Função que calcula a Centralidade de Grau (Degree Centrality) de um vértice. Utilize essa
+    função para gerar gráficos de histograma com a distribuição de graus dos vértices de cada grafo.
+    """
+
+    @staticmethod
+    def plot_graph_graus(graus: dict[str, int], savefile: str):
+        graus_array = np.fromiter(graus.values(), dtype=np.int32)
+        media = float(np.mean(graus_array))
+
+        plt.figure()
+        plt.title("Distribuição de graus")
+        plt.hist(graus_array, color="skyblue", edgecolor="black", bins=20)
+        plt.axvline(x=media, color="red", linestyle="dashed", label=f"Média: {media}")
+        plt.xlabel("Grau")
+        plt.ylabel("Frequência")
+        plt.legend()
+        plt.savefig(savefile, dpi=300)
+
+    @staticmethod
+    def perform(
+        grafo_direcionado: Grafo,
+        grafo_nao_direcionado: Grafo,
+    ):
+        with TimingPrinter("calcular graus do grafo direcionado"):
+            graus = grafo_direcionado.graus()
+        FILE = "histograma_graus_dir.png"
+        with TimingPrinter("gerando grafico dos graus do grafo direcionado"):
+            Part4.plot_graph_graus(graus, FILE)
+        print(f"grafico salvo em {FILE}")
+
+        with TimingPrinter("calcular graus do grafo não direcionado"):
+            graus = grafo_nao_direcionado.graus()
+        FILE = "histograma_graus_não_dir.png"
+        with TimingPrinter("gerando grafico dos graus do grafo não direcionado"):
+            Part4.plot_graph_graus(graus, FILE)
+        print(f"grafico salvo em {FILE}")
+
+
+class Part5:
+    """
+    5) Apresente um gráfico de barras que mostra os top-10 vértices com os maiores valores de
+    Degree Centrality.
+    """
+
+    @staticmethod
+    def plot_graph_top_graus(graus: dict[str, int], savefile: str):
+        x = nlargest(10, graus, key=graus.__getitem__)
+        y = [graus[node] for node in x]
+
+        plt.figure()
+        plt.title("Top 10 graus")
+        plt.bar(x=x, height=y)
+        plt.xlabel("Nome vértice")
+        plt.xticks(rotation=45, ha="right")
+        plt.ylabel("Grau")
+        plt.savefig(savefile, dpi=300, bbox_inches="tight")
+
+    @staticmethod
+    def perform(
+        grafo_direcionado: Grafo,
+        grafo_nao_direcionado: Grafo,
+    ):
+        graus = grafo_direcionado.graus()
+        FILE = "top10_graus_dir.png"
+        with TimingPrinter("gerando grafico dos top 10 graus do grafo direcionado"):
+            Part5.plot_graph_top_graus(graus, FILE)
+        print(f"grafico salvo em {FILE}")
+
+        graus = grafo_nao_direcionado.graus()
+        FILE = "top10_graus_não_dir.png"
+        with TimingPrinter("gerando grafico dos top 10 graus do grafo não direcionado"):
+            Part5.plot_graph_top_graus(graus, FILE)
+        print(f"grafico salvo em {FILE}")
+
+
 def perform_module(module: Type, perform_inputs):
     module_attrs = vars(module)
     if "__doc__" in module_attrs and module_attrs["__doc__"]:
@@ -118,3 +199,5 @@ if __name__ == "__main__":
     grafos = {"grafo_direcionado": gdir, "grafo_nao_direcionado": gundir}
     perform_module(Part2, perform_inputs=grafos)
     perform_module(Part3, perform_inputs=grafos)
+    perform_module(Part4, perform_inputs=grafos)
+    perform_module(Part5, perform_inputs=grafos)

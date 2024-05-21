@@ -4,12 +4,12 @@
     ser padronizados em letras maiúsculas e sem espaços em branco no início e no final da string. Entradas
     do conjunto de dados onde o nome do diretor e/ou nome do elenco estão vazias, devem ser ignoradas.
 trabalhando em 'criar grafo direcionado'...
-'criar grafo direcionado' terminou em 0.14348169300501468 segundos
+'criar grafo direcionado' terminou em 0.1485844420021749 segundos
 grafo_direcionado.ordem = 57609
 grafo_direcionado.tamanho = 90033
 
 trabalhando em 'criar grafo não direcionado'...
-'criar grafo não direcionado' terminou em 0.47890677399846027 segundos
+'criar grafo não direcionado' terminou em 0.49567247300001327 segundos
 grafo_nao_direcionado.ordem = 60921
 grafo_nao_direcionado.tamanho = 483031
 
@@ -18,11 +18,11 @@ grafo_nao_direcionado.tamanho = 483031
     para contar a quantidade de componentes fortemente conectadas. Para o grafo não-direcionado,
     retorne a quantidade de componentes conectadas.
 trabalhando em 'contar componentes do grafo direcionado'...
-'contar componentes do grafo direcionado' terminou em 0.11774414699902991 segundos
+'contar componentes do grafo direcionado' terminou em 0.1293250739981886 segundos
 count = 57563
 
 trabalhando em 'contar componentes do grafo não direcionado'...
-'contar componentes do grafo não direcionado' terminou em 0.07156030699843541 segundos
+'contar componentes do grafo não direcionado' terminou em 0.07090550100110704 segundos
 count = 1959
 
 
@@ -31,15 +31,39 @@ count = 1959
     (i.e., a soma dos pesos das arestas da árvore).
 trabalhando em "executando função no grafo não direcionado para 'BOB ODENKIRK'"...
 trabalhando em 'encontrando componente'...
-'encontrando componente' terminou em 0.6360009269992588 segundos
+'encontrando componente' terminou em 0.6732710879950901 segundos
 trabalhando em 'criando subgrafo'...
-'criando subgrafo' terminou em 0.592436896993604 segundos
+'criando subgrafo' terminou em 0.6094384079988231 segundos
 trabalhando em 'criando msp'...
-'criando msp' terminou em 0.574858496998786 segundos
+'criando msp' terminou em 0.5898751989952871 segundos
 trabalhando em 'computando soma dos pesos'...
-'computando soma dos pesos' terminou em 0.03359853100118926 segundos
-"executando função no grafo não direcionado para 'BOB ODENKIRK'" terminou em 1.846576408999681 segundos
+'computando soma dos pesos' terminou em 0.0350891740017687 segundos
+"executando função no grafo não direcionado para 'BOB ODENKIRK'" terminou em 1.915787623001961 segundos
 agm.ordem = 50153
 agm.tamanho = 50152
 custo_total = 101218
+
+
+4) Função que calcula a Centralidade de Grau (Degree Centrality) de um vértice. Utilize essa
+    função para gerar gráficos de histograma com a distribuição de graus dos vértices de cada grafo.
+trabalhando em 'calcular graus do grafo direcionado'...
+'calcular graus do grafo direcionado' terminou em 0.02493031400081236 segundos
+trabalhando em 'gerando grafico dos graus do grafo direcionado'...
+'gerando grafico dos graus do grafo direcionado' terminou em 0.17307992299902253 segundos
+grafico salvo em histograma_graus_dir.png
+trabalhando em 'calcular graus do grafo não direcionado'...
+'calcular graus do grafo não direcionado' terminou em 0.04780846100038616 segundos
+trabalhando em 'gerando grafico dos graus do grafo não direcionado'...
+'gerando grafico dos graus do grafo não direcionado' terminou em 0.14135126899782335 segundos
+grafico salvo em histograma_graus_não_dir.png
+
+
+5) Apresente um gráfico de barras que mostra os top-10 vértices com os maiores valores de
+    Degree Centrality.
+trabalhando em 'gerando grafico dos top 10 graus do grafo direcionado'...
+'gerando grafico dos top 10 graus do grafo direcionado' terminou em 0.1899743829999352 segundos
+grafico salvo em top10_graus_dir.png
+trabalhando em 'gerando grafico dos top 10 graus do grafo não direcionado'...
+'gerando grafico dos top 10 graus do grafo não direcionado' terminou em 0.2101020120026078 segundos
+grafico salvo em top10_graus_não_dir.png
 
