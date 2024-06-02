@@ -150,11 +150,11 @@ class Grafo(ABC):
                 subset.adiciona_aresta(node, neighbor, peso=peso)
         return subset
 
-    def betweenness_centralities(self) -> dict[str, int]:
+    def betweenness_centralities(self) -> dict[str, float]:
         # TODO: part6
         raise NotImplementedError("betweenness_centralities")
 
-    def closeness_centralities(self) -> dict[str, int]:
+    def closeness_centralities(self) -> dict[str, float]:
         # TODO: part6
         raise NotImplementedError("closeness_centralities")
 
