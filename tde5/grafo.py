@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from collections import defaultdict, deque
+from collections import defaultdict
+from heapq import heapify, heappop, heappush
 from itertools import product
 from typing import Iterable, Self
-from heapq import heapify, heappop, heappush
 
 from parse_netflix import NetflixCsvReader
 
@@ -149,6 +149,14 @@ class Grafo(ABC):
                 peso = self.get_peso(node, neighbor)
                 subset.adiciona_aresta(node, neighbor, peso=peso)
         return subset
+
+    def betweenness_centralities(self) -> dict[str, int]:
+        # TODO: part6
+        raise NotImplementedError("betweenness_centralities")
+
+    def closeness_centralities(self) -> dict[str, int]:
+        # TODO: part6
+        raise NotImplementedError("closeness_centralities")
 
 
 class GrafoDirected(Grafo):

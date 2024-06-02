@@ -1,8 +1,8 @@
-from typing import Type
 from heapq import nlargest
+from typing import Type
 
-from matplotlib import pyplot as plt
 import numpy as np
+from matplotlib import pyplot as plt
 
 from grafo import Grafo, GrafoDirected, GrafoUndirected
 from timing import TimingPrinter
@@ -135,6 +135,20 @@ class Part4:
         print(f"grafico salvo em {FILE}")
 
 
+def plot_graph_top_vertex_values(graus: dict[str, int], savefile: str):
+    x = nlargest(10, graus, key=graus.__getitem__)
+    y = [graus[node] for node in x]
+
+    plt.figure()
+    plt.title("Top 10 graus")
+    plt.bar(x=x, height=y)
+    plt.xlabel("Nome vértice")
+    plt.xticks(rotation=45, ha="right")
+    plt.ylabel("Grau")
+    plt.savefig(savefile, dpi=300, bbox_inches="tight")
+    print(f"grafico salvo em {savefile}")
+
+
 class Part5:
     """
     5) Apresente um gráfico de barras que mostra os top-10 vértices com os maiores valores de
@@ -142,34 +156,73 @@ class Part5:
     """
 
     @staticmethod
-    def plot_graph_top_graus(graus: dict[str, int], savefile: str):
-        x = nlargest(10, graus, key=graus.__getitem__)
-        y = [graus[node] for node in x]
+    def perform(
+        grafo_direcionado: Grafo,
+        grafo_nao_direcionado: Grafo,
+    ):
+        with TimingPrinter("calculando graus do grafo direcionado"):
+            graus = grafo_direcionado.graus()
+        with TimingPrinter("gerando grafico dos top 10 graus do grafo direcionado"):
+            plot_graph_top_vertex_values(graus, "top10_graus_dir.png")
 
-        plt.figure()
-        plt.title("Top 10 graus")
-        plt.bar(x=x, height=y)
-        plt.xlabel("Nome vértice")
-        plt.xticks(rotation=45, ha="right")
-        plt.ylabel("Grau")
-        plt.savefig(savefile, dpi=300, bbox_inches="tight")
+        with TimingPrinter("calculando graus do grafo não direcionado"):
+            graus = grafo_nao_direcionado.graus()
+        with TimingPrinter("gerando grafico dos top 10 graus do grafo não direcionado"):
+            plot_graph_top_vertex_values(graus, "top10_graus_não_dir.png")
+
+
+class Part6:
+    """
+    6) Função que calcula a Centralidade de Intermediação (Betweenness Centrality) de um vértice.
+    Utilize essa função para gerar um gráfico de barras que mostra os top-10 vértices com os maiores
+    valores.
+    """
 
     @staticmethod
     def perform(
         grafo_direcionado: Grafo,
         grafo_nao_direcionado: Grafo,
     ):
-        graus = grafo_direcionado.graus()
-        FILE = "top10_graus_dir.png"
+        with TimingPrinter(
+            "calculando centralidades de intermediação do grafo direcionado"
+        ):
+            centralities = grafo_direcionado.betweenness_centralities()
         with TimingPrinter("gerando grafico dos top 10 graus do grafo direcionado"):
-            Part5.plot_graph_top_graus(graus, FILE)
-        print(f"grafico salvo em {FILE}")
+            plot_graph_top_vertex_values(centralities, "top10_graus_dir.png")
 
-        graus = grafo_nao_direcionado.graus()
-        FILE = "top10_graus_não_dir.png"
+        with TimingPrinter(
+            "calculando centralidades de intermediação do grafo não direcionado"
+        ):
+            centralities = grafo_nao_direcionado.betweenness_centralities()
         with TimingPrinter("gerando grafico dos top 10 graus do grafo não direcionado"):
-            Part5.plot_graph_top_graus(graus, FILE)
-        print(f"grafico salvo em {FILE}")
+            plot_graph_top_vertex_values(centralities, "top10_graus_não_dir.png")
+
+
+class Part7:
+    """
+    7) Função que calcula a Centralidade de Proximidade (Closeness Centrality) de um vértice.
+    Utilize essa função para gerar um gráfico de barras que mostra os top-10 vértices com os maiores
+    valores.
+    """
+
+    @staticmethod
+    def perform(
+        grafo_direcionado: Grafo,
+        grafo_nao_direcionado: Grafo,
+    ):
+        with TimingPrinter(
+            "calculando centralidades de proximidade do grafo direcionado"
+        ):
+            centralities = grafo_direcionado.closeness_centralities()
+        with TimingPrinter("gerando grafico dos top 10 graus do grafo direcionado"):
+            plot_graph_top_vertex_values(centralities, "top10_graus_dir.png")
+
+        with TimingPrinter(
+            "calculando centralidades de proximidade do grafo não direcionado"
+        ):
+            centralities = grafo_nao_direcionado.closeness_centralities()
+        with TimingPrinter("gerando grafico dos top 10 graus do grafo não direcionado"):
+            plot_graph_top_vertex_values(centralities, "top10_graus_não_dir.png")
 
 
 def perform_module(module: Type, perform_inputs):
@@ -192,12 +245,17 @@ def perform_module(module: Type, perform_inputs):
 
 
 if __name__ == "__main__":
-    gdir, gundir = perform_module(
-        Part1,
-        perform_inputs={"dataset_path": "./netflix_amazon_disney_titles.csv"},
-    )
-    grafos = {"grafo_direcionado": gdir, "grafo_nao_direcionado": gundir}
-    perform_module(Part2, perform_inputs=grafos)
-    perform_module(Part3, perform_inputs=grafos)
-    perform_module(Part4, perform_inputs=grafos)
-    perform_module(Part5, perform_inputs=grafos)
+    try:
+        gdir, gundir = perform_module(
+            Part1,
+            perform_inputs={"dataset_path": "./netflix_amazon_disney_titles.csv"},
+        )
+        grafos = {"grafo_direcionado": gdir, "grafo_nao_direcionado": gundir}
+        perform_module(Part2, perform_inputs=grafos)
+        perform_module(Part3, perform_inputs=grafos)
+        perform_module(Part4, perform_inputs=grafos)
+        perform_module(Part5, perform_inputs=grafos)
+        perform_module(Part6, perform_inputs=grafos)
+        perform_module(Part7, perform_inputs=grafos)
+    except NotImplementedError as e:
+        print(f"função {e} não foi implementada ainda... parando programa")
