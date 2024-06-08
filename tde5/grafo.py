@@ -117,6 +117,7 @@ class Grafo(ABC):
         transposed = self.__class__()
         nodes = subset if subset is not None else self.vertices()
         for node in nodes:
+            transposed.adiciona_vertice(node)
             for neighbor in self.neighbors(node):
                 if subset is not None and neighbor not in subset:
                     continue
@@ -200,7 +201,10 @@ class GrafoDirected(Grafo):
         self = cls()
         with NetflixCsvReader(filename) as reader:
             for diretores, atores in reader:
+                for ator in atores:
+                    self.adiciona_vertice(ator)
                 for diretor in diretores:
+                    self.adiciona_vertice(diretor)
                     for ator in atores:
                         self.adiciona_aresta(ator, diretor)
         return self
@@ -242,12 +246,13 @@ class GrafoUndirected(Grafo):
         with NetflixCsvReader(filename) as reader:
             for _, atores in reader:
                 for ator1, ator2 in product(atores, atores):
-                    self.adiciona_aresta(ator1, ator2)
+                    if ator1 == ator2:
+                        self.adiciona_vertice(ator1)
+                    else:
+                        self.adiciona_aresta(ator1, ator2)
         return self
 
     def adiciona_aresta(self, u: str, v: str, peso: int | None = None) -> bool:
-        if u == v:
-            return False
         # nao adicionar arestas duplicadas
         # apenas incrementar peso
         if self.tem_aresta(u, v):

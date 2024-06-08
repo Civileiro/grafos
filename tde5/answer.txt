@@ -4,13 +4,13 @@
     ser padronizados em letras maiúsculas e sem espaços em branco no início e no final da string. Entradas
     do conjunto de dados onde o nome do diretor e/ou nome do elenco estão vazias, devem ser ignoradas.
 trabalhando em 'criar grafo direcionado'...
-'criar grafo direcionado' terminou em 0.160465020002448 segundos
-grafo_direcionado.ordem = 57609
+'criar grafo direcionado' terminou em 0.17077203700318933 segundos
+grafo_direcionado.ordem = 71381
 grafo_direcionado.tamanho = 90033
 
 trabalhando em 'criar grafo não direcionado'...
-'criar grafo não direcionado' terminou em 0.5370615979918512 segundos
-grafo_nao_direcionado.ordem = 60921
+'criar grafo não direcionado' terminou em 0.5094082750001689 segundos
+grafo_nao_direcionado.ordem = 61813
 grafo_nao_direcionado.tamanho = 483031
 
 
@@ -18,12 +18,12 @@ grafo_nao_direcionado.tamanho = 483031
     para contar a quantidade de componentes fortemente conectadas. Para o grafo não-direcionado,
     retorne a quantidade de componentes conectadas.
 trabalhando em 'contar componentes do grafo direcionado'...
-'contar componentes do grafo direcionado' terminou em 0.14623953599948436 segundos
-count = 57563
+'contar componentes do grafo direcionado' terminou em 0.1688033300015377 segundos
+count = 71335
 
 trabalhando em 'contar componentes do grafo não direcionado'...
-'contar componentes do grafo não direcionado' terminou em 0.08410654599720147 segundos
-count = 1959
+'contar componentes do grafo não direcionado' terminou em 0.07700294299866073 segundos
+count = 2851
 
 
 3) Função que recebe como entrada um vértice X (por exemplo, BOB ODENKIRK) e retorna a
@@ -31,14 +31,14 @@ count = 1959
     (i.e., a soma dos pesos das arestas da árvore).
 trabalhando em "executando função no grafo não direcionado para 'BOB ODENKIRK'"...
 trabalhando em 'encontrando componente'...
-'encontrando componente' terminou em 0.7718184050027048 segundos
+'encontrando componente' terminou em 0.736839956996846 segundos
 trabalhando em 'criando subgrafo'...
-'criando subgrafo' terminou em 0.6194043750001583 segundos
+'criando subgrafo' terminou em 0.6249746950052213 segundos
 trabalhando em 'criando msp'...
-'criando msp' terminou em 0.598280859994702 segundos
+'criando msp' terminou em 0.6274175709986594 segundos
 trabalhando em 'computando soma dos pesos'...
-'computando soma dos pesos' terminou em 0.04022476400132291 segundos
-"executando função no grafo não direcionado para 'BOB ODENKIRK'" terminou em 2.041361840994796 segundos
+'computando soma dos pesos' terminou em 0.039663914998527616 segundos
+"executando função no grafo não direcionado para 'BOB ODENKIRK'" terminou em 2.0392468369973358 segundos
 agm.ordem = 50153
 agm.tamanho = 50152
 custo_total = 101218
@@ -47,51 +47,51 @@ custo_total = 101218
 4) Função que calcula a Centralidade de Grau (Degree Centrality) de um vértice. Utilize essa
     função para gerar gráficos de histograma com a distribuição de graus dos vértices de cada grafo.
 trabalhando em 'calcular graus do grafo direcionado'...
-'calcular graus do grafo direcionado' terminou em 0.0272164390044054 segundos
+'calcular graus do grafo direcionado' terminou em 0.030675514994072728 segundos
 trabalhando em 'gerando grafico dos graus do grafo direcionado'...
 grafico salvo em histograma_graus_dir.png
-'gerando grafico dos graus do grafo direcionado' terminou em 0.18250849600008223 segundos
+'gerando grafico dos graus do grafo direcionado' terminou em 0.18064955600129906 segundos
 trabalhando em 'calcular graus do grafo não direcionado'...
-'calcular graus do grafo não direcionado' terminou em 0.054816118004964665 segundos
+'calcular graus do grafo não direcionado' terminou em 0.061457951000193134 segundos
 trabalhando em 'gerando grafico dos graus do grafo não direcionado'...
 grafico salvo em histograma_graus_não_dir.png
-'gerando grafico dos graus do grafo não direcionado' terminou em 0.14532633700582664 segundos
+'gerando grafico dos graus do grafo não direcionado' terminou em 0.13979201200709213 segundos
 
 
 5) Apresente um gráfico de barras que mostra os top-10 vértices com os maiores valores de
     Degree Centrality.
 trabalhando em 'calculando graus do grafo direcionado'...
-'calculando graus do grafo direcionado' terminou em 0.027735017996747047 segundos
+'calculando graus do grafo direcionado' terminou em 0.03215621400158852 segundos
 trabalhando em 'gerando grafico dos top 10 graus do grafo direcionado'...
 grafico salvo em top10_graus_dir.png
-'gerando grafico dos top 10 graus do grafo direcionado' terminou em 0.19664811000984628 segundos
+'gerando grafico dos top 10 graus do grafo direcionado' terminou em 0.18956231599440798 segundos
 trabalhando em 'calculando graus do grafo não direcionado'...
-'calculando graus do grafo não direcionado' terminou em 0.05117781300214119 segundos
+'calculando graus do grafo não direcionado' terminou em 0.05295479000778869 segundos
 trabalhando em 'gerando grafico dos top 10 graus do grafo não direcionado'...
 grafico salvo em top10_graus_não_dir.png
-'gerando grafico dos top 10 graus do grafo não direcionado' terminou em 0.19823626699508168 segundos
+'gerando grafico dos top 10 graus do grafo não direcionado' terminou em 0.21330382900487166 segundos
 
 
 6) Função que calcula a Centralidade de Intermediação (Betweenness Centrality) de um vértice.
     Utilize essa função para gerar um gráfico de barras que mostra os top-10 vértices com os maiores
     valores.
 trabalhando em 'calculando centralidades de intermediação do grafo direcionado'...
-'calculando centralidades de intermediação do grafo direcionado' terminou em 0.16757524201238994 segundos
+'calculando centralidades de intermediação do grafo direcionado' terminou em 0.18053433700697497 segundos
 trabalhando em 'gerando grafico dos top 10 centralidades de intermediação do grafo direcionado'...
 grafico salvo em top10_inter_dir.png
-'gerando grafico dos top 10 centralidades de intermediação do grafo direcionado' terminou em 0.21632306699757464 segundos
+'gerando grafico dos top 10 centralidades de intermediação do grafo direcionado' terminou em 0.19833789601398166 segundos
 trabalhando em 'calculando centralidades de intermediação do grafo não direcionado'...
 só que não... esse calculo demora quase 3 horas....
 carregando resultado pré-calculado
-'calculando centralidades de intermediação do grafo não direcionado' terminou em 0.010014079001848586 segundos
+'calculando centralidades de intermediação do grafo não direcionado' terminou em 0.011073367000790313 segundos
 trabalhando em 'gerando grafico dos top 10 centralidades de intermediação do grafo não direcionado'...
 grafico salvo em top10_inter_não_dir.png
-'gerando grafico dos top 10 centralidades de intermediação do grafo não direcionado' terminou em 0.2164334469998721 segundos
+'gerando grafico dos top 10 centralidades de intermediação do grafo não direcionado' terminou em 0.21988914201210719 segundos
 
 
 7) Função que calcula a Centralidade de Proximidade (Closeness Centrality) de um vértice.
     Utilize essa função para gerar um gráfico de barras que mostra os top-10 vértices com os maiores
     valores.
 trabalhando em 'calculando centralidades de proximidade do grafo direcionado'...
-'calculando centralidades de proximidade do grafo direcionado' terminou em 3.23000131174922e-06 segundos
+'calculando centralidades de proximidade do grafo direcionado' terminou em 3.8099969970062375e-06 segundos
 função closeness_centralities não foi implementada ainda... parando programa
