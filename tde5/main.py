@@ -1,5 +1,6 @@
 from heapq import nlargest
 from typing import Mapping, Type
+import pickle
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -37,6 +38,7 @@ def plot_graph_top_vertex_values(
     plt.xlabel("Nome vértice")
     plt.xticks(rotation=45, ha="right")
     plt.ylabel(value_name)
+    plt.ticklabel_format(axis="y", style="plain")
     plt.savefig(savefile, dpi=300, bbox_inches="tight")
     print(f"grafico salvo em {savefile}")
 
@@ -198,14 +200,23 @@ class Part6:
         with TimingPrinter(
             "calculando centralidades de intermediação do grafo não direcionado"
         ):
-            centralities = grafo_nao_direcionado.betweenness_centralities()
+            print("só que não... esse calculo demora quase 3 horas....")
+            print("carregando resultado pré-calculado")
+            with open("inter_nao_dir.pkl", "rb") as f:
+                centralities = pickle.load(f)
+            # centralities = grafo_nao_direcionado.betweenness_centralities()
+            # it needs to be halved for undirected graphs
+            for u in centralities:
+                centralities[u] /= 2.0
+            # with open("inter_nao_dir.pkl", "wb") as f:
+            #     pickle.dump(centralities, f, protocol=pickle.HIGHEST_PROTOCOL)
         with TimingPrinter(
             "gerando grafico dos top 10 centralidades de intermediação do grafo não direcionado"
         ):
             plot_graph_top_vertex_values(
                 centralities,
                 "top10_inter_não_dir.png",
-                "centralidades do intermediação",
+                "centralidades de intermediação",
             )
 
 

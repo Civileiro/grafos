@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from collections import defaultdict
+from collections import defaultdict, deque
 from heapq import heapify, heappop, heappush
 from itertools import product
 from typing import Iterable, Self
@@ -151,8 +151,42 @@ class Grafo(ABC):
         return subset
 
     def betweenness_centralities(self) -> dict[str, float]:
-        # TODO: part6
-        raise NotImplementedError("betweenness_centralities")
+        CB: dict[str, float] = defaultdict(float)
+
+        for s in self.vertices():
+            delta: dict[str, float] = defaultdict(float)
+            prev: dict[str, list[str]] = defaultdict(list)
+            sigma = defaultdict(int)
+            dist: dict[str, int] = defaultdict(int)
+
+            sigma[s] = 1
+            dist[s] = 0
+
+            Q = deque([s])
+            S = []
+
+            while Q:
+                u = Q.popleft()
+                S.append(u)
+
+                for v in self.neighbors(u):
+                    if v not in dist:
+                        dist[v] = dist[u] + 1
+                        Q.append(v)
+                    if dist[v] == dist[u] + 1:
+                        sigma[v] += sigma[u]
+                        prev[v].append(u)
+
+            while S:
+                v = S.pop()
+
+                for u in prev[v]:
+                    delta[u] += sigma[u] / sigma[v] * (1 + delta[v])
+
+                    if u != s:
+                        CB[v] += delta[v]
+
+        return CB
 
     def closeness_centralities(self) -> dict[str, float]:
         # TODO: part6
