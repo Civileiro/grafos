@@ -200,14 +200,11 @@ class Part6:
         with TimingPrinter(
             "calculando centralidades de intermediação do grafo não direcionado"
         ):
-            print("só que não... esse calculo demora quase 3 horas....")
+            print("só que não... esse calculo demora horas....")
             print("carregando resultado pré-calculado")
             with open("inter_nao_dir.pkl", "rb") as f:
                 centralities = pickle.load(f)
             # centralities = grafo_nao_direcionado.betweenness_centralities()
-            # it needs to be halved for undirected graphs
-            for u in centralities:
-                centralities[u] /= 2.0
             # with open("inter_nao_dir.pkl", "wb") as f:
             #     pickle.dump(centralities, f, protocol=pickle.HIGHEST_PROTOCOL)
         with TimingPrinter(
@@ -246,7 +243,13 @@ class Part7:
         with TimingPrinter(
             "calculando centralidades de proximidade do grafo não direcionado"
         ):
-            centralities = grafo_nao_direcionado.closeness_centralities()
+            print("só que não... esse calculo demora horas....")
+            print("carregando resultado pré-calculado")
+            with open("prox_nao_dir.pkl", "rb") as f:
+                centralities = pickle.load(f)
+            # centralities = grafo_nao_direcionado.closeness_centralities()
+            # with open("prox_nao_dir.pkl", "wb") as f:
+            #     pickle.dump(centralities, f, protocol=pickle.HIGHEST_PROTOCOL)
         with TimingPrinter(
             "gerando grafico dos top 10 centralidades de proximidade do grafo não direcionado"
         ):

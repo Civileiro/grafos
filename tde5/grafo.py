@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from collections import defaultdict, deque
 from heapq import heapify, heappop, heappush
+import heapq
 from itertools import product
 from typing import Iterable, Self
 
@@ -151,7 +152,10 @@ class Grafo(ABC):
                 subset.adiciona_aresta(node, neighbor, peso=peso)
         return subset
 
-    def betweenness_centralities(self) -> dict[str, float]:
+    @abstractmethod
+    def betweenness_centralities(self) -> dict[str, float]: ...
+
+    def _betweenness_centralities(self, directed) -> dict[str, float]:
         CB: dict[str, float] = defaultdict(float)
 
         for s in self.vertices():
@@ -163,18 +167,22 @@ class Grafo(ABC):
             sigma[s] = 1
             dist[s] = 0
 
-            Q = deque([s])
+            Q = [(0, s)]
             S = []
 
             while Q:
-                u = Q.popleft()
+                curr_cost, u = heapq.heappop(Q)
                 S.append(u)
 
                 for v in self.neighbors(u):
-                    if v not in dist:
-                        dist[v] = dist[u] + 1
-                        Q.append(v)
-                    if dist[v] == dist[u] + 1:
+                    weight = self.get_peso_unsafe(u, v)
+                    cost = curr_cost + weight
+                    if v not in dist or dist[v] > cost:
+                        dist[v] = cost
+                        heapq.heappush(Q, (cost, v))
+                        prev[v] = []
+
+                    if dist[v] == cost:
                         sigma[v] += sigma[u]
                         prev[v].append(u)
 
@@ -187,11 +195,42 @@ class Grafo(ABC):
                     if u != s:
                         CB[v] += delta[v]
 
+        if not directed:
+            for v in CB:
+                CB[v] /= 2
+
         return CB
 
+    def dijkstra(self, start: str) -> dict[str, int]:
+        distances = {start: 0}
+        pq = [(0, start)]
+
+        while pq:
+            curr_cost, node = heapq.heappop(pq)
+            if curr_cost > distances[node]:
+                continue
+
+            for next in self.neighbors(node):
+                weight = self.get_peso_unsafe(node, next)
+                distance = curr_cost + weight
+
+                if next not in distances or distance < distances[next]:
+                    distances[next] = distance
+                    heapq.heappush(pq, (distance, next))
+
+        return distances
+
     def closeness_centralities(self) -> dict[str, float]:
-        # TODO: part6
-        raise NotImplementedError("closeness_centralities")
+        res = {}
+
+        for u in self.vertices():
+            distances = self.dijkstra(u)
+            total = sum(1 / d for d in distances.values() if d != 0)
+            reachable = len(distances)
+
+            res[u] = (reachable - 1) * total
+
+        return res
 
 
 class GrafoDirected(Grafo):
@@ -236,6 +275,9 @@ class GrafoDirected(Grafo):
                 if subset is None or neighbor in subset:
                     graus[neighbor] += 1
         return graus
+
+    def betweenness_centralities(self) -> dict[str, float]:
+        return super()._betweenness_centralities(directed=True)
 
 
 class GrafoUndirected(Grafo):
@@ -329,3 +371,6 @@ class GrafoUndirected(Grafo):
                 peso = self.get_peso_unsafe(node_external, neighbor)
                 heappush(edges, (peso, node_external, neighbor))
         return msp
+
+    def betweenness_centralities(self) -> dict[str, float]:
+        return super()._betweenness_centralities(directed=False)
