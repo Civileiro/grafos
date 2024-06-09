@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from collections import defaultdict, deque
+from collections import defaultdict
 from heapq import heapify, heappop, heappush
 import heapq
 from itertools import product

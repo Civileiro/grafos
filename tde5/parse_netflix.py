@@ -46,7 +46,14 @@ class NetflixCsvReader:
 
 
 if __name__ == "__main__":
+    diretor_set = set()
+    ator_set = set()
     with NetflixCsvReader("netflix_amazon_disney_titles.csv") as reader:
         for diretores, atores in reader:
-            print(f"{diretores = }")
-            print(f"{atores = }")
+            for diretor in diretores:
+                diretor_set.add(diretor)
+            for ator in atores:
+                ator_set.add(ator)
+    print(f"{len(diretor_set) = }")
+    print(f"{len(ator_set) = }")
+    print(f"{len(diretor_set | ator_set) = }")
